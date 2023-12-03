@@ -1,9 +1,17 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cloud/presentation/Screens/main-warpper/main_wrapper.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+late List<CameraDescription> cameras;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+// Obtain a list of the available cameras on the device.
+  cameras = await availableCameras();
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
