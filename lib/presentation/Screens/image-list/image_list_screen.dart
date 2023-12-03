@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cloud/presentation/Screens/image-list/widgets/image_item.dart';
 
-class ImageList extends ConsumerWidget {
-  ImageList({Key? key}) : super(key: key);
+class ImageListScreen extends ConsumerWidget {
+  ImageListScreen({Key? key}) : super(key: key);
   List<String> imageUrls = [
     'https://via.placeholder.com/600/92c952',
     'https://via.placeholder.com/600/771796',
