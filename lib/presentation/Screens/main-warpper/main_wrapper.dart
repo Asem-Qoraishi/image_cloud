@@ -13,19 +13,21 @@ class MainWrapper extends ConsumerWidget {
     int pageIndex = ref.watch(bottomNavProvider);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        height: 70,
+        height: 60,
         elevation: 0,
         selectedIndex: pageIndex,
         backgroundColor: const Color.fromRGBO(240, 240, 250, 1),
         indicatorColor: const Color.fromRGBO(200, 220, 250, 1),
         onDestinationSelected: (index) => ref.read(bottomNavProvider.notifier).state = index,
-        destinations: [
+        destinations: const [
           NavigationDestination(
-            icon: Icon(pageIndex == 0 ? Icons.home : Icons.home_outlined),
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
             label: "Home",
           ),
           NavigationDestination(
-            icon: Icon(pageIndex == 1 ? Icons.camera_enhance_rounded : Icons.camera_enhance_outlined),
+            icon: Icon(Icons.camera_enhance_outlined),
+            selectedIcon: Icon(Icons.camera_enhance_rounded),
             label: "Gallery",
           ),
         ],

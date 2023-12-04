@@ -28,7 +28,7 @@ class ImageListScreen extends ConsumerWidget {
         ]),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ListView.builder(
           itemCount: imageUrls.length,
           itemBuilder: (context, index) => ImageItem(imageUrl: imageUrls[index]),

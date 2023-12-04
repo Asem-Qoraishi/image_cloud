@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cloud/main.dart';
 import 'package:image_cloud/presentation/Providers/camera/camera.provider.dart';
@@ -8,6 +11,8 @@ import 'package:image_cloud/presentation/Screens/image-picker/widgets/flash_butt
 import 'package:image_cloud/presentation/Screens/image-picker/widgets/gallery_btn.dart';
 import 'package:image_cloud/presentation/Screens/image-picker/widgets/switch_camera._btn.dart';
 import 'package:image_cloud/presentation/Screens/image-picker/widgets/take_photo_btn.dart';
+import 'package:image_editor_plus/image_editor_plus.dart';
+import 'package:image_editor_plus/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerScreen extends ConsumerStatefulWidget {
@@ -19,6 +24,18 @@ class ImagePickerScreen extends ConsumerStatefulWidget {
 
 class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with WidgetsBindingObserver {
   ImagePicker picker = ImagePicker();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -48,10 +65,32 @@ class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with Widg
     super.dispose();
   }
 
+  Future<void> navigateToImageEditor(Uint8List image) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageEditor(
+          image: image,
+          features: const ImageEditorFeatures(
+            blur: true,
+            emoji: true,
+            crop: true,
+            flip: true,
+            text: true,
+            filters: true,
+            rotate: true,
+            brush: true,
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> takePhoto() async {
     try {
       XFile? image = await ref.watch(cameraControllerProvider.notifier).takePhoto();
       if (image != null) {
+        await navigateToImageEditor(await image.readAsBytes());
         print("You teaked a picture.");
       } else {
         print("Error : no image file");
@@ -72,25 +111,34 @@ class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with Widg
   void pickImageFromGallery() async {
     XFile? image = await ref.watch(cameraControllerProvider.notifier).pickImageFromGallery();
     if (image != null) {
-      print("Picked Image from Gallery");
+      await navigateToImageEditor(await image.readAsBytes());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: SafeArea(
-        child: SizedBox(
+        child: Container(
           width: double.infinity,
           height: double.infinity,
+          // padding: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(24),
+          ),
           child: Stack(
-            alignment: Alignment.center,
+            fit: StackFit.expand,
+            alignment: Alignment.topCenter,
             children: [
               const CameraPreviewWidget(),
 
               //Flash button to turn on of off flash of camera
               Positioned(
-                top: 16,
+                top: 24,
                 left: 16,
                 child: FlashButton(
                   isOn: ref.watch(cameraControllerProvider.notifier).flashMode != FlashMode.off,
