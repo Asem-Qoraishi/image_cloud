@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1093942733946",
+    "project_id": "cloud-image-ae57f",
+    "storage_bucket": "cloud-image-ae57f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093942733946:android:1752310e76a4e2c2155fc3",
+        "android_client_info": {
+          "package_name": "com.example.image_cloud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl0H2WZmwLcpFmpqJceUx060Em4lzap8I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
