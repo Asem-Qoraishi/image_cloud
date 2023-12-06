@@ -27,12 +27,14 @@ class ImageItem extends StatelessWidget {
           child: Center(
             child: CachedNetworkImage(
               fadeInDuration: const Duration(milliseconds: 500),
+              width: double.infinity,
+              height: double.infinity,
               imageUrl: imageUrl,
               fit: BoxFit.cover,
               errorWidget: (context, url, error) {
                 return const Icon(Icons.error);
               },
-              // placeholder: (context, url) => const CircularProgressIndicator(),
+              placeholder: (context, url) => const CircularProgressIndicator(),
             ),
           ),
         ),
