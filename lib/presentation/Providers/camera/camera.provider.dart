@@ -17,7 +17,6 @@ final cameraControllerProvider =
 
 class CameraFeaturesController extends StateNotifier<CameraState> {
   CameraFeaturesController(super._state);
-  FlashMode _flashMode = FlashMode.off;
 
   Future<void> onNewCameraSelected(CameraDescription cameraDescription) async {
     final CameraController? oldController = state.controller;
@@ -31,7 +30,7 @@ class CameraFeaturesController extends StateNotifier<CameraState> {
       enableAudio: false,
       imageFormatGroup: ImageFormatGroup.jpeg,
     );
-    cameraController.setFlashMode(_flashMode);
+    cameraController.setFlashMode(state.flashMode);
     state = state.copyWith(controller: cameraController);
 
     // If the controller is updated then update the UI.
@@ -56,15 +55,13 @@ class CameraFeaturesController extends StateNotifier<CameraState> {
     }
   }
 
-  FlashMode get flashMode => _flashMode;
-
   Future<void> swithcFlashMode() async {
-    if (_flashMode == FlashMode.off) {
-      _flashMode = FlashMode.always;
+    if (state.flashMode == FlashMode.off) {
+      state = state.copyWith(flashMode: FlashMode.always);
     } else {
-      _flashMode = FlashMode.off;
+      state = state.copyWith(flashMode: FlashMode.off);
     }
-    state.controller!.setFlashMode(_flashMode);
+    state.controller!.setFlashMode(state.flashMode);
   }
 
   Future<XFile?> pickImageFromGallery() async {
@@ -73,6 +70,7 @@ class CameraFeaturesController extends StateNotifier<CameraState> {
       return image;
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -114,6 +112,7 @@ class CameraFeaturesController extends StateNotifier<CameraState> {
 
     try {
       final XFile file = await cameraController.takePicture();
+      state.copyWith(image: file);
       return file;
     } on CameraException catch (e) {
       print("Error when taking picture : $e");

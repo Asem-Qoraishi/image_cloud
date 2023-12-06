@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ import 'package:image_cloud/presentation/Screens/image-picker/widgets/flash_butt
 import 'package:image_cloud/presentation/Screens/image-picker/widgets/gallery_btn.dart';
 import 'package:image_cloud/presentation/Screens/image-picker/widgets/switch_camera._btn.dart';
 import 'package:image_cloud/presentation/Screens/image-picker/widgets/take_photo_btn.dart';
+import 'package:image_cloud/presentation/Screens/upload-image/upload_image_screen.dart';
 import 'package:image_editor_plus/image_editor_plus.dart';
 import 'package:image_editor_plus/utils.dart';
 import 'package:image_picker/image_picker.dart';
@@ -67,7 +69,7 @@ class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with Widg
 
   Future<void> navigateToImageEditor(Uint8List image) async {
     await Navigator.push(
-      context,
+      ref.context,
       MaterialPageRoute(
         builder: (context) => ImageEditor(
           image: image,
@@ -79,11 +81,31 @@ class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with Widg
             text: true,
             filters: true,
             rotate: true,
-            brush: true,
           ),
         ),
       ),
+    ).then(
+      (value) {
+        if (value != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return UploadImageScreen(
+                  image: value,
+                );
+              },
+            ),
+          );
+        }
+      },
     );
+  }
+
+  Future<void> uploadImageToFirabaseStorage(Uint8List file) async {
+    Reference ref =
+        FirebaseStorage.instance.ref().child('images').child('${DateTime.now().microsecondsSinceEpoch}.png');
+    ref.putData(file);
   }
 
   Future<void> takePhoto() async {
@@ -141,7 +163,7 @@ class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with Widg
                 top: 24,
                 left: 16,
                 child: FlashButton(
-                  isOn: ref.watch(cameraControllerProvider.notifier).flashMode != FlashMode.off,
+                  isOn: ref.watch(cameraControllerProvider).flashMode != FlashMode.off,
                   onPressed: swithcFlashMode,
                 ),
               ),
