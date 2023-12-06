@@ -102,12 +102,6 @@ class _ImagePickerScreenState extends ConsumerState<ImagePickerScreen> with Widg
     );
   }
 
-  Future<void> uploadImageToFirabaseStorage(Uint8List file) async {
-    Reference ref =
-        FirebaseStorage.instance.ref().child('images').child('${DateTime.now().microsecondsSinceEpoch}.png');
-    ref.putData(file);
-  }
-
   Future<void> takePhoto() async {
     try {
       XFile? image = await ref.watch(cameraControllerProvider.notifier).takePhoto();
